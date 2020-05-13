@@ -31,7 +31,7 @@ def img_correct_prediction(img_prediction, features_meta, opening_factor=4):
 
     img_prediction_with_correction[
         "is_sky_PREDICTED_COR"
-    ] = sky_mask_predicted_corrected.ravel()
+    ] = sky_mask_predicted_corrected.ravel().astype(int)
 
     return img_prediction_with_correction
 

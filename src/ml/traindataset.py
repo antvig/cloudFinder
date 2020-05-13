@@ -11,7 +11,7 @@ def create_traindataset_from_meta(
 ):
     traindataset, traindataset_meta = distribute_groupby_computation(
         meta_to_traindataset_fct,
-        df_meta_to_evaluate,
+        df_meta,
         gp_by=on,
         features_list=features,
         **kwargs,

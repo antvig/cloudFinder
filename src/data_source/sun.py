@@ -112,16 +112,23 @@ def download_images(in_img_meta = 'data/img_metadata/', out = 'data/img/'):
 
         wget.download(img_path, out + img_meta['img_name'])
 
-
-def find_polygone_coordinate(xml_polygon):
-        
-        a = xml.etree.ElementTree.fromstring(xml_polygon)
-        poly= a.find('polygon')
-        pts = poly.findall('pt')
-        coordinate = [[int(pt.find('y').text), int(pt.find('x').text)] for pt in pts]
-
-        return coordinate
     
+def parse_xml_polygone(xml_polygon):
+    
+    a = xml.etree.ElementTree.fromstring(xml_polygon)
+    poly= a.find('polygon')
+    
+    if poly is None:
+        polygone_coordinate = []
+    else:
+        try:
+            pts = poly.findall('pt')
+            polygone_coordinate = [[int(pt.find('y').text), int(pt.find('x').text)] for pt in pts]
+        except:
+            polygone_coordinate = []
+
+    return polygone_coordinate
+
 
 if __name__ == '__main__':
     out_metadata = 'data/img_metadata/'

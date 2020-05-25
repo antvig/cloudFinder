@@ -16,7 +16,7 @@ def compute_feature_importance(traindataset, features, target, model_class):
 def compute_bootstrap_feature_importance(
     bootstrap_traindataset, target, features, model_class, bootstrap_label
 ):
-    bootstrap_features_importance = ditribut_groupby_computation(
+    bootstrap_features_importance = distribute_groupby_computation(
         compute_feature_importance, bootstrap_traindataset, gp_by=bootstrap_label, features=features, target=target, model_class=model_class
     )
 

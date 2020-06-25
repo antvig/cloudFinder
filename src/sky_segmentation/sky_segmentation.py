@@ -1,9 +1,10 @@
 from src.image.features import pixel_features
 from src.image.utils import load_image
 from src.image.transform import resize_image
-from src.image.segment import get_mask
+from src.image.segment import get_mask, get_border
+from skimage.segmentation import clear_border
 
-from skimage.morphology import opening, disk
+from skimage.morphology import opening, disk, closing
 
 from src.data_source.sun import parse_xml_polygone
 
@@ -14,7 +15,26 @@ from tqdm import tqdm
 
 IMAGE_PATH = "data/img/sky_segmentation/"
 
-
+# def img_correct_prediction_v2(img_prediction, features_meta):
+#     """
+#     Get the 
+#     """
+#     img_prediction_with_correction = img_prediction.copy()
+    
+#     size_h = features_meta[features_meta.img_name == img_name]["size_h"].iloc[0]
+#     size_l = features_meta[features_meta.img_name == img_name]["size_l"].iloc[0]
+    
+#     sky_mask_predicted = img_prediction["is_sky_PREDICTED"].values.reshape(
+#         (size_h, size_l)
+#     )
+    
+#     upp
+    
+#     img_border = get_border(img_prediction["is_sky_PROBA"].values)
+    
+#     contour = array_img[0, :] +  array_img[0, :]
+    
+    
 def img_correct_prediction(img_prediction, features_meta, opening_factor=4):
 
     img_prediction_with_correction = img_prediction.copy()
@@ -27,7 +47,8 @@ def img_correct_prediction(img_prediction, features_meta, opening_factor=4):
         (size_h, size_l)
     )
 
-    sky_mask_predicted_corrected = opening(sky_mask_predicted, disk(opening_factor))
+    sky_mask_predicted_corrected = closing(sky_mask_predicted, disk(opening_factor))
+    sky_mask_predicted_corrected = sky_mask_predicted_corrected & ~clear_border(sky_mask_predicted_corrected)
 
     img_prediction_with_correction[
         "is_sky_PREDICTED_COR"

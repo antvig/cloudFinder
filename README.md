@@ -5,8 +5,10 @@
 
 | name | url                                      | information                           | size                                                                             |
 |------|------------------------------------------|---------------------------------------|--------------------------------------------------------------------------------------------|
-| SUN  | https://groups.csail.mit.edu/vision/SUN/ | - images segmentation <br> - scene recognition | - 131067 Images <br> - 908 Scene categories <br> - 313884 Segmented objects <br> - 4479 Object categories 
+| SUN  | https://groups.csail.mit.edu/vision/SUN/ | - images segmentation <br> - scene recognition | - 131067 Images <br> - 908 Scene categories <br> - 313884 Segmented objects <br> - 4479 Object categories |
 | SkyFinder  | https://mypages.valdosta.edu/rpmihail/skyfinder/ | - Sky segmentation <br> - Time/Weather data | - 90000 Images from 56 cameras |
+| SWIMCAT  | http://www.vintage.winklerbros.net/swimcat.html  | - Weather classification | - 784 Images in 5 groups  |
+| RSCM  | http://vcc.szu.edu.cn/research/2017/RSCM.html  | - Weather classification | - 65,000 images in 6 groups  |
 
 
 ## Biblio 

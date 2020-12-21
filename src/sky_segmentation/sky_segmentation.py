@@ -96,12 +96,15 @@ def sun_meta_to_train_dataset(
     return dataset, meta
 
 
-def get_img_target(img, polygones, size):
+def get_img_target(img, polygones, size, ravel):
 
     sky_mask = get_mask(img, polygones)
     sky_mask_resized = resize_image(sky_mask.astype(np.float), size=size) > 0.5
 
-    return sky_mask_resized.ravel()
+    if ravel:
+        return sky_mask_resized.ravel()
+    else:
+        return sky_mask_resized
 
 
 def get_img_features(img, size, features_list):

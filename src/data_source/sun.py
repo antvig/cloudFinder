@@ -134,8 +134,9 @@ def download_images(df_img_meta, out):
     for _, img_meta in tqdm(df_img_meta.iterrows(), desc="Download images"):
 
         img_path = img_meta["img_name_path"] + img_meta["img_name"]
-
-        wget.download(img_path, os.path.join(out, img_meta["img_name"]))
+        local_img_path = os.path.join(out, img_meta["img_name"])
+        if not os.path.isfile(local_img_path):
+            wget.download(img_path, local_img_path)
 
 
 def parse_xml_polygone(xml_polygon):

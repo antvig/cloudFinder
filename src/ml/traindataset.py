@@ -17,7 +17,7 @@ def create_traindataset_from_meta(df_meta, on, meta_to_X_y_fct, **kwargs):
     for img, df_img in tqdm.tqdm(df_meta.groupby(on)):
         tmp_X, tmp_y, tmp_meta = meta_to_X_y_fct(df_img, **kwargs)
         tmp_meta.extend([img])
-        if X is not None:
+        if tmp_X is not None:
             X.append(tmp_X)
             y.append(tmp_y)
             tmp_meta.extend([idx])

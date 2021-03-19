@@ -5,7 +5,6 @@ sys.path.append(project_path)
 os.chdir(project_path)
 
 import argparse
-import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 from src.sky_segmentation.sky_segmentation import get_sun_image_X_y_DL
@@ -27,7 +26,7 @@ DATASET_META_LABEL = "dataset_meta.csv"
 DATA_PATH = 'data/process/sky_segmentation'
 MODEL_PATH = "models/sky_segmentation"
 
-BACKBONE = 'resnet34'
+BACKBONE = 'efficientnetb0'
 
 if __name__ == "__main__":
 
@@ -78,14 +77,14 @@ if __name__ == "__main__":
         dataset_meta_train = dataset_meta[dataset_meta.idx.isin(idx_train)].copy()
         dataset_meta_test = dataset_meta[dataset_meta.idx.isin(idx_test)].copy()
 
-        model = Unet(BACKBONE, encoder_weights='imagenet')
+        model = Unet(BACKBONE, classes=1, activation="sigmoid", encoder_weights='imagenet')
         model.compile('Adam', loss=bce_jaccard_loss, metrics=[iou_score])
 
         history = model.fit(
                 x=X_train,
                 y=y_train.astype(float),
-                batch_size=1,
-                epochs=3,
+                batch_size=8,
+                epochs=10,
                 validation_data=(X_test, y_test.astype(float))
                 )
 

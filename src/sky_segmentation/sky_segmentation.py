@@ -3,7 +3,7 @@ from src.image.utils import load_image
 from src.image.transform import resize_image
 from src.image.segment import get_mask, get_border
 from skimage.segmentation import clear_border
-
+import warnings
 from skimage.morphology import opening, disk, closing
 
 from src.data_source.sun import parse_xml_polygone
@@ -88,7 +88,12 @@ def get_sun_image_X_y_DL(
         # IV - resize Image and sky_mask
         X = resize_image(image, size, how="square")
         y = (resize_image(sky_mask.astype(np.float), size=size, how="square") > 0.5).astype(int)
-        meta = [X.shape[0], X.shape[1], sky_coverage, True]
+        if (X.shape[0] != size) or (X.shape[1] != size):
+            meta = [X.shape[0], X.shape[1], sky_coverage, False]
+            X, y = None, None
+            warnings.warn("{} has invalid size [{},{}]".format(img_name, X.shape[0], X.shape[1]))
+        else:
+            meta = [X.shape[0], X.shape[1], sky_coverage, True]
 
     return X, y, meta
 

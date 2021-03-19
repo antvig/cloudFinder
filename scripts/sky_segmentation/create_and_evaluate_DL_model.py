@@ -114,8 +114,4 @@ if __name__ == "__main__":
     sorted_index = np.argsort(unorted_meta.idx)
     y_predicted = y_predicted[sorted_index]
 
-    save(os.path.join(DATA_PATH, Y_LABEL_PRED), X)
-
-    # save(os.path.join(DATA_PATH, X_LABEL), X)
-    # save(os.path.join(DATA_PATH, Y_LABEL), y)
-    # dataset_meta.to_csv(os.path.join(DATA_PATH, DATASET_META_LABEL), index=False)
+    save(os.path.join(DATA_PATH, Y_LABEL_PRED), y_predicted)

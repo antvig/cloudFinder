@@ -44,13 +44,13 @@ def img_correct_prediction(img_prediction, features_meta, opening_factor=4):
     size_l = features_meta[features_meta.img_name == img_name]["size_l"].iloc[0]
 
     sky_mask_predicted = img_prediction["is_sky_PREDICTED"].values.reshape(
-            (size_h, size_l)
-            )
+        (size_h, size_l)
+    )
 
     sky_mask_predicted_corrected = closing(sky_mask_predicted, disk(opening_factor))
     sky_mask_predicted_corrected = sky_mask_predicted_corrected & ~clear_border(
-            sky_mask_predicted_corrected
-            )
+        sky_mask_predicted_corrected
+    )
 
     img_prediction_with_correction[
         "is_sky_PREDICTED_COR"
@@ -60,17 +60,18 @@ def img_correct_prediction(img_prediction, features_meta, opening_factor=4):
 
 
 def get_sun_image_X_y_DL(
-        sun_img_meta,
-        size=100,
-        minimum_sky_coverage=0.05,
-        download=False,
-        ):
+    sun_img_meta,
+    size=100,
+    minimum_sky_coverage=0.05,
+    download=False,
+):
     if download:
         img_path = sun_img_meta.iloc[0].img_name_path
     else:
         img_path = IMAGE_PATH
 
     img_name = sun_img_meta.iloc[0].img_name
+    img_class = sun_img_meta.iloc[0].name
 
     # I - Load Image
     image = load_image(img_path, img_name)
@@ -82,63 +83,21 @@ def get_sun_image_X_y_DL(
 
     # III - Check the minimum sky coverage
     if sky_coverage < minimum_sky_coverage:
-        meta = [0, 0, sky_coverage, False]
+        meta = [
+            img_name,
+            img_class,
+            image.shape[0],
+            image.shape[1],
+            sky_coverage,
+            False,
+        ]
         X, y = None, None
     else:
         # IV - resize Image and sky_mask
         X = resize_image(image, size, how="square")
-        y = (resize_image(sky_mask.astype(np.float), size=size, how="square") > 0.5).astype(int)
-        if (X.shape[0] != size) or (X.shape[1] != size):
-            meta = [X.shape[0], X.shape[1], sky_coverage, False]
-            X, y = None, None
-            warnings.warn("{} has invalid size [{},{}]".format(img_name, X.shape[0], X.shape[1]))
-        else:
-            meta = [X.shape[0], X.shape[1], sky_coverage, True]
-
-    return X, y, meta
-
-
-def get_sun_image_X_y(
-        sun_img_meta,
-        size=100,
-        features_list=["r"],
-        minimum_sky_coverage=0.05,
-        download=False,
-        ):
-    if download:
-        img_path = sun_img_meta.iloc[0].img_name_path
-    else:
-        img_path = IMAGE_PATH
-
-    img_name = sun_img_meta.iloc[0].img_name
-
-    # I - Load Image
-    image = load_image(img_path, img_name)
-
-    # II - Get ground truth
-    polygones = [parse_xml_polygone(a) for a in sun_img_meta.polygone]
-    sky_mask = get_mask(image, polygones)
-    sky_coverage = sky_mask.sum() / sky_mask.size
-
-    # III - Check the minimum sky coverage
-    if sky_coverage < minimum_sky_coverage:
-        meta = [[0, 0, sky_coverage, False]]
-        X, y = None, None
-    else:
-        # IV - resize Image and sky_mask
-        image_resized = resize_image(image, size, how="scale")
-        sky_mask_resized = (
-                resize_image(sky_mask.astype(np.float), size=size, how="scale") > 0.5
-        )
-
-        # V - create features
-        features = pixel_features(image_resized, features_list=features_list)
-
-        # VI - create dataset
-        X = pd.DataFrame(features)
-        y = sky_mask_resized.astype(int)
-        meta = [
-                [image_resized.shape[0], image_resized.shape[1], sky_coverage, True]
-                ]
+        y = (
+            resize_image(sky_mask.astype(np.float), size=size, how="square") > 0.5
+        ).astype(int)
+        meta = [img_name, img_class, image.shape[0], image.shape[1], sky_coverage, True]
 
     return X, y, meta

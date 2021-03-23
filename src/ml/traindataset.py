@@ -16,7 +16,6 @@ def create_traindataset_from_meta(df_meta, on, meta_to_X_y_fct, **kwargs):
     idx = 0
     for img, df_img in tqdm.tqdm(df_meta.groupby(on)):
         tmp_X, tmp_y, tmp_meta = meta_to_X_y_fct(df_img, **kwargs)
-        tmp_meta.extend([img])
         if tmp_X is not None:
             X.append(tmp_X)
             y.append(tmp_y)
@@ -27,26 +26,26 @@ def create_traindataset_from_meta(df_meta, on, meta_to_X_y_fct, **kwargs):
         meta.append(tmp_meta)
 
     return (
-        np.stack(X),
-        np.stack(y),
-        pd.DataFrame(
-            meta, columns= ["width", "height", "sky_coverage", "is_used", "image", "idx"]
-        )
-    )
+            np.stack(X),
+            np.stack(y),
+            pd.DataFrame(
+                    meta, columns=["img_name", "img_class", "width", "height", "sky_coverage", "is_used", "idx"]
+                    )
+            )
 
 
 def create_traindataset_from_meta_old(
-    df_meta, on, meta_to_traindataset_fct, features, distribute, **kwargs
-):
+        df_meta, on, meta_to_traindataset_fct, features, distribute, **kwargs
+        ):
     if distribute:
         # TODO make this work with numpy array
         traindataset, traindataset_meta = distribute_groupby_computation(
-            meta_to_traindataset_fct,
-            df_meta,
-            gp_by=on,
-            features_list=features,
-            **kwargs,
-        )
+                meta_to_traindataset_fct,
+                df_meta,
+                gp_by=on,
+                features_list=features,
+                **kwargs,
+                )
     else:
         traindataset = []
         traindataset_meta = []
@@ -66,14 +65,14 @@ def create_traindataset_from_meta_old(
 
 
 def create_bootstrap_traindataset_from_meta(
-    df_meta,
-    on,
-    meta_to_traindataset_fct,
-    bootsrap_nbr,
-    subsample_size,
-    features,
-    **kwargs,
-):
+        df_meta,
+        on,
+        meta_to_traindataset_fct,
+        bootsrap_nbr,
+        subsample_size,
+        features,
+        **kwargs,
+        ):
     """
     Create train dataset on subsampled data
 
@@ -90,12 +89,12 @@ def create_bootstrap_traindataset_from_meta(
         df_meta_to_evaluate = df_meta[df_meta[on].isin(label_to_evaluate)]
 
         traindataset, traindataset_meta = distribute_groupby_computation(
-            meta_to_traindataset_fct,
-            df_meta_to_evaluate,
-            gp_by=on,
-            features_list=features,
-            **kwargs,
-        )
+                meta_to_traindataset_fct,
+                df_meta_to_evaluate,
+                gp_by=on,
+                features_list=features,
+                **kwargs,
+                )
         traindataset["fold"] = i
         bootstrap_traindataset.append(traindataset.copy())
 

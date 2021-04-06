@@ -13,6 +13,9 @@ def get_mask(image, polygones):
     
     return mask
 
+def get_border(image):
+    
+    return np.concatenate((image[:,0][::-1], image[0, 1:], image[1:,-1], image[-1,1:-1][::-1]))
 
 def extract_segment(image, polygone_coordinate):
     

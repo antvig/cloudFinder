@@ -71,7 +71,7 @@ def get_sun_image_X_y_DL(
         img_path = IMAGE_PATH
 
     img_name = sun_img_meta.iloc[0].img_name
-    img_class = sun_img_meta.iloc[0].name
+    img_class = sun_img_meta.iloc[0].img_name_path.split("/")[-2]
 
     # I - Load Image
     image = load_image(img_path, img_name)
